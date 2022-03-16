@@ -3,16 +3,20 @@
 namespace App\Controller;
 
 use App\Model\User;
-use App\Service\UserService;
-use App\Config\Database;
+use App\View\View;
 
 class UserController extends BaseController
 {
-    public function index()
+    public function index() :View
     {
 
         $results = (new User())->getUserList();
-        print_r($results);
+        foreach ($results as $res) {
+            print_r($res);
+            print_r('<br />');
+        }
 
+//        return View::make('users/index', ['foo' => 'bar']);
+        return View::make('users/index', $results);
     }
 }
