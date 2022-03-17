@@ -23,7 +23,15 @@ class PostController extends BaseController
 
     public function getSinglePost() :View
     {
-        $postId = 1;
+//        var_dump($_GET);
+        if ($_GET['id']) {
+            $postId = $_GET['id'];
+        } else {
+            return $this->errorPage();
+        }
+//        echo 'aaa';
+//        echo '<br />' . $postId . '<br />';
+//        $postId = 1;
         $results = (new Post())->getPostById($postId);
 //        foreach ($results as $k => $v) {
 //            print_r($k . '   -   '. $v);

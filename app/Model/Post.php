@@ -6,12 +6,12 @@ class Post extends BaseModel
 {
 
     public function getPostList(){
-        $this->db->query("SELECT p.id AS post_id, p.title, p.body, p.created_at AS post_created_at, u.username, u.id AS user_id, IFNULL(SUM(c.post_id),0) AS comment_count
+        $this->db->query("SELECT p.id AS post_id, p.title, p.body, p.created_at AS post_created_at, u.username, u.id AS user_id, IFNULL(COUNT(c.post_id),0) AS comment_count
                                 FROM `post` p 
                                 LEFT JOIN user u ON p.user_id = u.id 
                                 LEFT JOIN comment c ON c.post_id = p.id 
                                 GROUP by p.id
-                                ORDER BY `post_id` ASC;");
+                                ORDER BY `post_created_at` DESC;");
 
         $results = $this->db->fetchList();
 

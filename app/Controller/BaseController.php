@@ -16,15 +16,20 @@ class BaseController
 
     public function index() : View
     {
-        echo "At BaseController index <br />";
+//        echo "At BaseController index <br />";
         return View::make('index');
 //        return (new View('index'))->renderPage();
     }
 
     public function form(): View {
-        echo "At BaseController form <br />";
+//        echo "At BaseController form <br />";
         return View::make('users/create');
 //        return (new View('users/create'))->renderPage();
+    }
+
+    public function errorPage(): View {
+
+        return View::make('404');
     }
 
 }

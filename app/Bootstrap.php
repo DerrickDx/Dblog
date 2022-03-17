@@ -26,8 +26,9 @@ $router
     ->get('/', [BaseController::class, 'index'])
     ->get('/users', [UserController::class, 'index'])
     ->get('/posts', [PostController::class, 'index'])
-    ->get('/posts/1', [PostController::class, 'getSinglePost'])
-    ->get('/form', [BaseController::class, 'form']);
+    ->get('/posts/details', [PostController::class, 'getSinglePost'])
+    ->get('/form', [BaseController::class, 'form'])
+    ->post('/test', [BaseController::class, 'test']);
 
 
 //print_r('REQUEST_URI: ' . $_SERVER['REQUEST_URI']. '<br/>');

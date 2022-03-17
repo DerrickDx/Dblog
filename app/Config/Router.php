@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Config;
 
 use App\Attributes\Route;
+use App\Controller\BaseController;
 
 class Router
 {
@@ -18,12 +19,7 @@ class Router
         return $this;
     }
 
-//    public function register(string $route, callable|array $action): self
-//    {
-//        $this->routes[$route] = $action;
-//
-//        return $this;
-//    }
+
 
     public function get(string $route, callable|array $action): self
     {
@@ -44,65 +40,67 @@ class Router
         return $this->routes;
     }
 
-
-//    public function resolve(string $requestUri)
-//    {
-//        $route = explode('?', $requestUri)[0];
-//        print_r($route. '<br/>');
-//        $action = $this->routes[$route] ?? null;
-//        print_r('action: ' .$action. '<br/>');
-//        if (! $action) {
-//            throw new \Exception();
-//        }
-//
-//        if (is_callable($action)) {
-//            return call_user_func($action);
-//        }
-//
-//        if (is_array($action)) {
-//            [$class, $method] = $action;
-//
-//            if (class_exists($class)) {
-//                $class = new $class();
-//
-//                if (method_exists($class, $method)) {
-//                    return call_user_func_array([$class, $method], []);
-//                }
-//            }
-//        }
-//
-//        throw new \Exception();
-//    }
-
     public function resolve(string $requestUri, string $requestMethod)
     {
+//        var_dump($_GET);
 //        echo '<br/>';
+//        var_dump($_POST);
+//
+//        $params = [];
+//        if ($_GET) {
+//            $params = $_GET;
+//        } else if ($_POST){
+//            $params = $_POST;
+//        }
+//        var_dump($params);
 //        echo '$requestMethod:' . $requestMethod .'<br/>';
+//        echo '$requestUri:' . $requestUri .'<br/>';
         $route = explode('?', $requestUri)[0];
-//        echo '$route:' . $route .'<br/>';
-//        echo '$route:' . $this->routes[$requestMethod] .'<br/>';
+//        echo '  ! route:  ' . $route .'<br/>';
+//        print_r($route);
+//        echo '<br/>';
+////        echo '$route - RequestMethod:  ' . $this->routes[$requestMethod] .'<br/>';
+//        print_r($this->routes[$requestMethod] );
+//        echo '<br/>';
         $action = $this->routes[$requestMethod][$route] ?? null;
 //        echo 'action!!!: ' .'<br/>' ;
 //        print_r($action );
-        echo '<br/>';
+//        echo '<br/>';
 
         if (! $action) {
+
 //            throw new \Exception();
 //            throw new RouteNotFoundException();
-            throw new CustomizedExceptions(EXC_MSG_ROUTE_NOT_FOUND);
+//            throw new CustomizedExceptions(EXC_MSG_ROUTE_NOT_FOUND);
+//            echo EXC_MSG_ROUTE_NOT_FOUND;
+            return call_user_func_array([new BaseController(), 'errorPage'], []);
         }
 
         if (is_callable($action)) {
+            echo '<br/>';
+
             return call_user_func($action);
         }
 
         if (is_array($action)) {
             [$class, $method] = $action;
-
+//            print_r($action);
+//            echo '<br/>';
+//            print_r($class);
+//            echo '<br/>';
+//            print_r($method);
+//            echo '<br/>';
             if (class_exists($class)) {
                 $class = new $class();
 
                 if (method_exists($class, $method)) {
+//                    print_r($class);
+//                    echo '<br/>';
+//                    print_r($method);
+//                    echo '<br/>';
+//                    echo '<br /> params:';
+//                    print_r($params);
+//                    print_r($params['id']);
                     return call_user_func_array([$class, $method], []);
                 }
             }
