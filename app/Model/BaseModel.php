@@ -13,4 +13,9 @@ abstract class BaseModel
 //        echo "!!!!!!!!!!!!!!!!!!!!!!AT BaseModel" . "<br />";
         $this->db = new Database;
     }
+
+    public function dateTimeDisplay($attr)
+    {
+        return is_null($attr) ?  $attr : date(DATE_TIME_FORMAT, strtotime($attr . ' UTC'));
+    }
 }

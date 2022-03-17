@@ -14,3 +14,4 @@
 
     const EXC_MSG_VIEW_NOT_FOUND = 'View not found';
     const EXC_MSG_ROUTE_NOT_FOUND = '404 Not Found';
+    const DATE_TIME_FORMAT = 'Y-m-d H:i';

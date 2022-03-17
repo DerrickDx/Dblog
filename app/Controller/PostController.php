@@ -26,6 +26,8 @@ class PostController extends BaseController
 //        var_dump($_GET);
         if ($_GET['id']) {
             $postId = $_GET['id'];
+        } else if ($_POST['post_id']) {
+            $postId = $_POST['post_id'];
         } else {
             return $this->errorPage();
         }
@@ -34,11 +36,17 @@ class PostController extends BaseController
 //        $postId = 1;
         $results = (new Post())->getPostById($postId);
 //        foreach ($results as $k => $v) {
-//            print_r($k . '   -   '. $v);
+////            print_r($k . '   -   '. $v);
+//            print_r($k);
 //            print_r('<br /><br /><br /><br /><br /><br /><br />');
 //        }
 //        print_r($results);
 //        return View::make('users/index', ['foo' => 'bar']);
+//        echo $results['post']->post_created_at . '<br>';
+
         return View::make('posts/details', $results);
     }
+
+
+
 }

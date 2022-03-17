@@ -2,13 +2,16 @@
 
 use App\Config\Router;
 use App\Controller\BaseController;
+use App\Controller\CommentController;
 use App\Controller\PostController;
 use App\Controller\UserController;
 
 require_once 'Config/Config.php';
-require_once 'Config/UrlHelper.php';
+require_once 'Config/Helper.php';
+
 
 //echo "Boostrap! <br />";
+date_default_timezone_set('Australia/Adelaide');
 
 spl_autoload_register(function ($className) {
 //    echo 'At spl_autoload_register' . '<br />';
@@ -27,8 +30,7 @@ $router
     ->get('/users', [UserController::class, 'index'])
     ->get('/posts', [PostController::class, 'index'])
     ->get('/posts/details', [PostController::class, 'getSinglePost'])
-    ->get('/form', [BaseController::class, 'form'])
-    ->post('/test', [BaseController::class, 'test']);
+    ->post('/comments/add', [CommentController::class, 'addComment']);
 
 
 //print_r('REQUEST_URI: ' . $_SERVER['REQUEST_URI']. '<br/>');
