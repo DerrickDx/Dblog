@@ -23,8 +23,8 @@ class BaseController
 
     public function form(): View {
 //        echo "At BaseController form <br />";
-        return View::make('users/create');
-//        return (new View('users/create'))->renderPage();
+        return View::make('admin/create');
+//        return (new View('admin/create'))->renderPage();
     }
 
     public function errorPage(): View {

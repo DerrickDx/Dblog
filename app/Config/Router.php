@@ -77,7 +77,7 @@ class Router
         }
 
         if (is_callable($action)) {
-            echo '<br/>';
+//            echo '<br/>';
 
             return call_user_func($action);
         }
@@ -91,6 +91,9 @@ class Router
 //            print_r($method);
 //            echo '<br/>';
             if (class_exists($class)) {
+//                echo '<br/>';
+//                print_r($class);
+//                echo '<br/>';
                 $class = new $class();
 
                 if (method_exists($class, $method)) {
