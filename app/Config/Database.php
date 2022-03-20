@@ -13,8 +13,6 @@ class Database
 
     public function __construct()
     {
-//        echo "-----------------At Database.php <br />";
-
         $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
         $options = array (
             PDO::ATTR_PERSISTENT => true,
@@ -29,13 +27,13 @@ class Database
         }
     }
 
-    public function query($query, $params=[]) {
+    public function excute($query, $params=[]) {
         if (isset($this->pdo)) {
         } else {
 
         }
         $this->stmt = $this->pdo->prepare($query);
-        $this->stmt->execute($params);
+        return $this->stmt->execute($params);
     }
 
     public function fetchList(){

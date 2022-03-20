@@ -10,7 +10,6 @@ abstract class BaseModel
 
     public function __construct()
     {
-//        echo "!!!!!!!!!!!!!!!!!!!!!!AT BaseModel" . "<br />";
         $this->db = new Database;
     }
 

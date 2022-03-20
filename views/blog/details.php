@@ -1,4 +1,4 @@
-
+<?php require VIEW_PATH . '/header.php'; ?>
 
 <a href="<?php echo URLROOT . 'blog'; ?>" ><button>Back</button></a>
 <br>
@@ -47,6 +47,6 @@
         }
     }
 </script>
-
+<?php require VIEW_PATH . '/footer.php'; ?>
 
 

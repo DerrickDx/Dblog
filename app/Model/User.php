@@ -2,40 +2,37 @@
 
 namespace App\Model;
 
+use DateTimeZone;
+
 class User extends BaseModel
 {
 
     public function getUserList()
     {
-        $this->db->query("SELECT u.id , u.username, u.created_at, u.edited_at FROM user u");
+        $this->db->excute("SELECT u.id , u.username, u.created_at, u.edited_at FROM `user` u");
 
         $results = $this->db->fetchList();
+
+        foreach ( $results as $res) {
+            $res->created_at = $this->dateTimeDisplay($res->created_at);
+            $res->edited_at = $this->dateTimeDisplay($res->edited_at);
+        }
 
         return $results;
     }
 
-    public function addUser($data)
+    public function createUser($data)
     {
         // Prepare Query
-        $this->db->query('INSERT INTO admin (username, email,password) 
-                            VALUES (:username, :email, :password)');
+        return $this->db->excute('INSERT INTO `user` (username, password) 
+                            VALUES (?, ?)', [$data['username'], $data['password']]);
 
-        // Bind Values
-        $this->db->bindValue(':username', $data['username']);
-        $this->db->bindValue(':password', $data['password']);
-
-        //Execute
-        if($this->db->execute()){
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public function login(array $loginData)
     {
 
-        $this->db->query('SELECT u.id , u.username , u.password
+        $this->db->excute('SELECT u.id , u.username , u.password
                                 FROM `user` u
                                 WHERE u.username = ?;',
                 [$loginData['username']]);
@@ -50,5 +47,40 @@ class User extends BaseModel
         return false;
 
     }
+
+    public function removeUser($id)
+    {
+        $this->db->excute("DELETE FROM `user` WHERE id = ?", [$id]);
+    }
+
+    public function getUserById($id)
+    {
+        $this->db->excute("SELECT u.id , u.username, u.created_at, u.edited_at FROM `user` u WHERE id = ?",
+            [$id]);
+        $results = $this->db->fetch();
+        $results->created_at = $this->dateTimeDisplay($results->created_at);
+        $results->edited_at = $this->dateTimeDisplay($results->edited_at);
+        return $results;
+    }
+
+    public function getUserByName($name)
+    {
+        $this->db->excute("SELECT u.id FROM `user` u WHERE u.username = ?",
+            [$name]);
+        $results = $this->db->fetch();
+        return $results;
+    }
+
+    public function updateUser(array $data)
+    {
+        $edited_at = (new \DateTime())->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s ');
+
+        return $this->db->excute('UPDATE `user` SET 
+                  `username` = ?, `password` = ?, `edited_at` = ?
+                  WHERE `id` = ?',
+            [$data['username'], $data['password'], $edited_at, $data['id']] );
+    }
+
+
 
 }

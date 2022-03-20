@@ -2,30 +2,34 @@
 
 namespace App\Controller;
 
+use App\Model\Comment;
+use App\Model\Post;
+use App\Model\User;
 use App\View\View;
 
 class BaseController
 {
 
-    public function __construct(
-//        protected InvoiceService $invoiceService,
-    )
+    protected User $userModel;
+    protected Post $postModel;
+    protected Comment $commentModel;
+
+    const USER_ACTION = 'user';
+    const POST_ACTION = 'post';
+    const COMMENT_ACTION = 'comment';
+
+    public function __construct()
     {
-//        echo "At BaseController <br />";
+        $this->userModel = new User();
+        $this->postModel = new Post();
+        $this->commentModel = new Comment();
     }
 
     public function index() : View
     {
-//        echo "At BaseController index <br />";
         return View::make('index');
-//        return (new View('index'))->renderPage();
     }
 
-    public function form(): View {
-//        echo "At BaseController form <br />";
-        return View::make('admin/create');
-//        return (new View('admin/create'))->renderPage();
-    }
 
     public function errorPage(): View {
 
