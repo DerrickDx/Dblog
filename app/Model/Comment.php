@@ -7,10 +7,10 @@ use Helper;
 class Comment extends BaseModel
 {
 
-    public function addComment($params)
+    public function addBlogComment($params)
     {
         // TO-DO: Sanitize data
-        $this->db->excute("INSERT INTO `comment` ( `name`, `post_id`, `message`, `is_anonymous`) 
+        return $this->db->excute("INSERT INTO `comment` ( `name`, `post_id`, `message`, `is_anonymous`)
                 VALUES (?, ?, ?, ?)",
             [
                 $params['name'],
@@ -35,7 +35,7 @@ class Comment extends BaseModel
 
     public function removeComment($id){
 
-        $this->db->excute("DELETE FROM comment WHERE id = ?", [$id]);
+        return $this->db->excute("DELETE FROM comment WHERE id = ?", [$id]);
     }
 
     public function removeCommentByPostId($id){
@@ -45,6 +45,7 @@ class Comment extends BaseModel
 
     public function updateComment($data)
     {
+
         return $this->db->excute('UPDATE `comment` SET 
                   `is_approved` = ?
                   WHERE `id` = ?',

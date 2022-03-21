@@ -1,6 +1,7 @@
 <?php require VIEW_PATH . '/header.php'; ?>
 
 <a href="<?php echo URLROOT . 'blog'; ?>" ><button>Back</button></a>
+<a href="<?php echo URLROOT ; ?>admin">  <button>Admin</button></a>
 <br>
 <h1><?php echo $this->params['post']->title; ?></h1>
 <div>
@@ -12,6 +13,14 @@
     <h3>Comments</h3>
 </div>
 
+<?php if(!empty($_SESSION['msg'])): ?>
+    <span style="color: darkgreen; font-size: x-large"><?php echo !empty($_SESSION['msg']) ? $_SESSION['msg'] : ''; ?></span>
+    <?php messageDisplay('msg'); ?>
+<?php endif; ?>
+<?php if(!empty($_SESSION['err_msg'])): ?>
+    <span style="color: darkred; font-size: x-large"><?php echo !empty($_SESSION['err_msg']) ? $_SESSION['err_msg'] : ''; ?></span>
+    <?php messageDisplay('err_msg'); ?>
+<?php endif; ?>
 <?php foreach($this->params['comments'] as $comment) : ?>
     <div>
         <div>
@@ -24,6 +33,7 @@
 
 <div>
     <h3>Add a comment</h3>
+
     <form name="commentForm" action="/blog/post/addCommand" method="post" enctype="multipart/form-data">
         <p> <input type="text" name="message" placeholder="Enter your comment..."  style="auto; min-width: 600px; min-height: 50px" ></p>
         <p> Name: <input type="text" name="name" placeholder="Enter your name">  &nbsp&nbsp Anonymous <input type="checkbox" id='annoymousComment' value='1'"  name="anonymous" ><input type="hidden" id='annoymousCommentHidden' value='0'  name="anonymous" >

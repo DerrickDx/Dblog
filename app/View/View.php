@@ -15,7 +15,6 @@ class View
     public function renderPage(): string
     {
         $viewPath = VIEW_PATH . '/' . $this->view . '.php';
-//        echo 'viewPath: ' . $viewPath;
 
         if (! file_exists($viewPath)) {
             echo $viewPath . ' does not exist';
@@ -23,16 +22,7 @@ class View
             throw new CustomizedExceptions(EXC_MSG_VIEW_NOT_FOUND);
         }
 
-//        foreach ($this->params as $k => $v) {
-//            print_r('<br />');
-////            print_r($v);
-//            if (is_object($v)) {
-////                echo "is object";
-//            } else {
-//                print_r($k . ' - ' . $v);
-//                $$k = $v;
-//            }
-//        }
+
         ob_start();
         include $viewPath;
 

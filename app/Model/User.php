@@ -23,7 +23,6 @@ class User extends BaseModel
 
     public function createUser($data)
     {
-        // Prepare Query
         return $this->db->excute('INSERT INTO `user` (username, password) 
                             VALUES (?, ?)', [$data['username'], $data['password']]);
 
@@ -32,25 +31,31 @@ class User extends BaseModel
     public function login(array $loginData)
     {
 
-        $this->db->excute('SELECT u.id , u.username , u.password
+        $execRes = $this->db->excute('SELECT u.id , u.username , u.password
                                 FROM `user` u
                                 WHERE u.username = ?;',
                 [$loginData['username']]);
-        $result = $this->db->fetch();
 
-        if($result) {
-            if (password_verify($loginData['password'], $result->password)) {
-                return $result;
+        if($execRes['succeeded']) {
+            $result = $this->db->fetch();
+            if($result) {
+                if (password_verify($loginData['password'], $result->password)) {
+                    $execRes['info'] = $result;
+                } else {
+                    $execRes['succeeded'] = false;
+                    $execRes['info'] = 'Incorrect username or password';
+                }
+                return $execRes;
             }
         }
 
-        return false;
+        return $execRes;
 
     }
 
     public function removeUser($id)
     {
-        $this->db->excute("DELETE FROM `user` WHERE id = ?", [$id]);
+        return $this->db->excute("DELETE FROM `user` WHERE id = ?", [$id]);
     }
 
     public function getUserById($id)
@@ -76,9 +81,9 @@ class User extends BaseModel
         $edited_at = (new \DateTime())->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s ');
 
         return $this->db->excute('UPDATE `user` SET 
-                  `username` = ?, `password` = ?, `edited_at` = ?
+                 `password` = ?, `edited_at` = ?
                   WHERE `id` = ?',
-            [$data['username'], $data['password'], $edited_at, $data['id']] );
+            [$data['password'], $edited_at, $data['id']] );
     }
 
 

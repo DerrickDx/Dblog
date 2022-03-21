@@ -7,14 +7,23 @@
     <form name="addUserForm" action="/admin/createUser" method="post" enctype="multipart/form-data">
         <div>
             <p><label> Username:</label></p>
-            <p>  <input type="text" name="username" placeholder="Username"> </p>
+            <p>  <input type="text" name="username" placeholder="Username" value="<?php echo !empty($this->params['username']) ? $this->params['username'] : ''; ?>"> </p>
         </div>
         <div>
             <p><label> Password:</label></p>
             <p> <input type="password" name="password" placeholder="Password"> </p>
         </div>
-        <button onclick="return validateForm()" type="submit">Submit</button>
-
+        <div>
+            <div>
+                <button onclick="return validateForm()" type="submit">Submit</button>
+            </div>
+            <?php  if(!empty($this->params['err_msg'])) : ?> <div><span style="color: #D8000C"><?php echo $this->params['err_msg']; ?></span> </div>
+            <?php endif; ?>
+            <?php if(!empty($_SESSION['err_msg'])): ?>
+                <span style="color: red; font-size: x-large"><?php echo !empty($_SESSION['err_msg']) ? $_SESSION['err_msg'] : ''; ?></span>
+                <?php messageDisplay(name: 'err_msg'); ?>
+            <?php endif; ?>
+        </div>
     </form>
 </div>
 <script>

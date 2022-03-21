@@ -7,7 +7,8 @@
     <form name="addUserForm" action="/admin/updateUser" method="post" enctype="multipart/form-data">
         <div>
             <p><label> Username:</label></p>
-            <p><input type="text" disabled name="username" value="<?php echo $this->params['user']->username; ?>" placeholder="Username"> </p>
+            <p><input type="text" disabled name="displayed_username" value="<?php echo $this->params['user']->username; ?>" placeholder="Username"> </p>
+            <p><input type="hidden"  name="username" value="<?php echo $this->params['user']->username; ?>" placeholder="Username"> </p>
         </div>
 
         <div>
@@ -26,7 +27,13 @@
         <div>
             <p> <input type="hidden" name="user_id" value="<?php echo $this->params['user']->id; ?>"></p>
         </div>
-        <button onclick="return validateForm()" type="submit">Submit</button>
+        <div>
+            <div>
+                <button onclick="return validateForm()" type="submit">Submit</button>
+            </div>
+            <?php  if(!empty($this->params['err_msg'])) : ?> <div><span style="color: #D8000C"><?php echo $this->params['err_msg']; ?></span> </div>
+            <?php endif; ?>
+        </div>
     </form>
 </div>
 <script>

@@ -15,7 +15,6 @@ class PostController extends BaseController
 
     public function getBlogPost() :View
     {
-//        var_dump($_GET);
         if ($_GET['id']) {
             $postId = $_GET['id'];
         } else if ($_POST['post_id']) {
@@ -29,35 +28,41 @@ class PostController extends BaseController
         return View::make('blog/details', $results);
     }
 
-    public function removePost(): View
+    public function removePost()
     {
         $post_id = ($_POST['post_id']);
         $_SESSION['tab'] = self::POST_ACTION;
 
         if ($post_id && is_numeric($post_id) ) {
-            $this->postModel->removePost($post_id);
+
+
+            $execResult = $this->postModel->removePost($post_id);
+            if($this->checkExec($execResult)) {
+                messageDisplay('Post Removed');
+            } else {
+                messageDisplay(message:'Failed. '. $this->getExecInfo($execResult), name:'err_msg');
+            }
             $this->commentModel->removeCommentByPostId($post_id);
             header('location: '.URLROOT.'admin');
-            return $this->admin();
         } else {
             return $this->errorPage();
         }
     }
 
-    public function createPost(): View
+    public function createPost()
     {
         $_SESSION['tab'] = self::POST_ACTION;
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = ['body' => trim($_POST['body']),
                 'title' => trim($_POST['title']),
                 'user_id' => trim($_POST['user_id'])];
-//            var_dump($data);
 
-            if ($this->postModel->createPost($data)){
-
+            $execResult = $this->postModel->createPost($data);
+            if($this->checkExec($execResult)) {
+                messageDisplay('Post Created');
                 header('location: '.URLROOT.'admin');
-                return $this->admin();
             } else {
+                messageDisplay(message:'Failed. '. $this->getExecInfo($execResult), name:'err_msg');
                 return View::make('admin/post/add');
             }
         } else {
@@ -74,13 +79,16 @@ class PostController extends BaseController
                 'title' => trim($_POST['title']),
                 'id' => trim($_POST['post_id']),
                 'user_id' => trim($_POST['user_id'])];
-            if ($this->postModel->updatePost($data)){
 
+            $execResult = $this->postModel->updatePost($data);
+            if ($this->checkExec($execResult)){
+                messageDisplay('Post Updated');
                 header('location: '.URLROOT.'admin');
-                return $this->admin();
 
             } else {
-                return View::make('admin/post/update');
+                messageDisplay(message:'Failed. '. $this->getExecInfo($execResult), name:'err_msg');
+                $params = ['err_msg' => $this->getExecInfo($execResult)];
+                return View::make('admin/post/update', $params);
             }
         } else {
             $post_id = ($_GET['id']);

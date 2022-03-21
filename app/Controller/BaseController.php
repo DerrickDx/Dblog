@@ -7,6 +7,7 @@ use App\Model\Post;
 use App\Model\User;
 use App\View\View;
 
+
 class BaseController
 {
 
@@ -36,4 +37,13 @@ class BaseController
         return View::make('404');
     }
 
+    public function checkExec($res)
+    {
+        return $res['succeeded'];
+    }
+
+    public function getExecInfo($res)
+    {
+        return $res['info'];
+    }
 }

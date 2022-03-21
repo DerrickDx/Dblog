@@ -15,7 +15,14 @@
             <a href="<?php echo URLROOT ; ?>admin/logout"><button>Logout</button></a></h1>
 
     </div>
-
+    <?php if(!empty($_SESSION['msg'])): ?>
+        <span style="color: darkgreen; font-size: x-large"><?php echo !empty($_SESSION['msg']) ? $_SESSION['msg'] : ''; ?></span>
+        <?php messageDisplay(); ?>
+    <?php endif; ?>
+    <?php if(!empty($_SESSION['err_msg'])): ?>
+        <span style="color: red; font-size: x-large"><?php echo !empty($_SESSION['err_msg']) ? $_SESSION['err_msg'] : ''; ?></span>
+        <?php messageDisplay(name: 'err_msg'); ?>
+    <?php endif; ?>
     <div class="tab">
         <button class="tablinks <?php echo $this->params['source'] ==  'user' ? 'active' :''?>" onclick="tab('user')">Admin Users</button>
         <button class="tablinks <?php echo $this->params['source'] ==  'post' ? 'active' :''?>" onclick="tab('post')">Blog Posts</button>
@@ -72,7 +79,8 @@
                 <tr>
                     <td><?php echo $post->post_id ?></td>
                     <td><?php echo $post->title ?></td>
-                    <td><?php echo $post->title ?></td>
+                    <td><?php $charLimit = 75; echo strlen($post->body) > $charLimit ? substr($post->body, 0, $charLimit) .'...' : $post->body; ?></td>
+
                     <td><?php echo $post->post_created_at ?></td>
                     <td><?php echo $post->post_edited_at ?></td>
                     <td><?php echo is_null($post->username) ? 'Deactivated User' : $post->username ?></td>

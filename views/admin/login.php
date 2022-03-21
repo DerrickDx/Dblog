@@ -1,10 +1,11 @@
 <?php require VIEW_PATH . '/header.php'; ?>
 <div>
+    <div>
         <h1>Log in to Admin</h1>
-        <form action="<?php echo URLROOT; ?>admin/login" method="post" enctype="multipart/form-data">
+        <form name="loginForm" action="<?php echo URLROOT; ?>admin/login" method="post" enctype="multipart/form-data">
             <div >
                 <label>Username:<sup>*</sup></label>
-                <input placeholder="Username" type="text" name="username">
+                <input placeholder="Username" type="text" name="username" value="<?php echo !empty($this->params['username']) ? $this->params['username'] : ''; ?>" >
             </div>
             <div>
                 <label>Password: <sup>*</sup></label>
@@ -12,13 +13,28 @@
             </div>
             <div>
                 <div>
-                    <input type="submit" value="Login">
+                    <input onclick="return validateForm()" type="submit" value="Login">
                 </div>
-
+               <?php  if(!empty($this->params['err_msg'])) : ?> <span style="color: #D8000C"><?php echo $this->params['err_msg']; ?></span>
+                 <?php endif; ?>
             </div>
         </form>
+    </div>
+    <br/>
     <div>
         <a href="<?php echo URLROOT ; ?>"><button>Back to Homepage</button></a>
     </div>
 </div>
+    <script>
+        function validateForm() {
+            if (document.forms["loginForm"]["username"].value == "") {
+                alert("Please enter username");
+                return false;
+            }
+            if (document.forms["loginForm"]["password"].value == "") {
+                alert("Please enter password");
+                return false;
+            }
+        }
+    </script>
 <?php require VIEW_PATH . '/footer.php'; ?>

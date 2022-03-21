@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\View\View;
+use function Sodium\add;
 
 class UserController extends BaseController
 {
@@ -12,14 +13,19 @@ class UserController extends BaseController
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = ['username' => trim($_POST['username']), 'password' => password_hash(trim($_POST['password']), PASSWORD_DEFAULT)];
             if (!$this->userModel->getUserByName($data['username'])) {
-                if ($this->userModel->createUser($data)){
+                $execResult = $this->userModel->createUser($data);
+                if ($this->checkExec($execResult)){
+
+                    messageDisplay('User ' . $data['username']. ' Created');
                     header('location: '.URLROOT.'admin');
-                    return $this->admin();
+//                    return $this->admin();
                 } else {
+                    messageDisplay(message:'Failed. '. $this->getExecInfo($execResult), name:'err_msg');
                     return View::make('admin/user/add');
                 }
             } else {
-                return View::make('admin/user/add');
+                $params = ['err_msg' => 'User already exits'];
+                return View::make('admin/user/add', array_merge($params, $_POST));
             }
         } else {
             return View::make('admin/user/add');
@@ -30,26 +36,22 @@ class UserController extends BaseController
     {
         $_SESSION['tab'] = self::USER_ACTION;
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data = ['username' => trim($_POST['username']),
+            $data = [
                 'password' => password_hash(trim($_POST['password']), PASSWORD_DEFAULT),
-                'id' => trim($_POST['user_id']),];
-//            if (!$this->userModel->getUserByName($data['username'])) {
-                if ($this->userModel->updateUser($data)) {
-                    if ($_SESSION['user_id'] == trim($data['id'])) {
-                        return $this->logout();
-                    } else {
-                        header('location: ' . URLROOT . 'admin');
-                        return $this->admin();
-                    }
+                'id' => trim($_POST['user_id'])];
+            $execResult = $this->userModel->updateUser($data);
+            if ($this->checkExec($execResult)) {
+                messageDisplay('User ' . trim($_POST['username']). ' Updated');
+                if ($_SESSION['user_id'] == trim($data['id'])) {
+                    return $this->logout();
                 } else {
-
-                    $result = $this->userModel->getUserById($data['id']);
-                    return View::make('admin/user/update', ["user" =>$result]);
+                    header('location: ' . URLROOT . 'admin');
                 }
-//            }else {
-//                $result = $this->userModel->getUserById($data['id']);
-//                return View::make('admin/user/update', ["user" =>$result]);
-//            }
+            } else {
+                messageDisplay(message:'Failed. '. $this->getExecInfo($execResult), name:'err_msg');
+                $result = $this->userModel->getUserById($data['id']);
+                return View::make('admin/user/update', ["user" =>$result]);
+            }
         } else {
             $user_id = ($_GET['id']);
             if ($user_id && is_numeric($user_id) ) {
@@ -62,15 +64,19 @@ class UserController extends BaseController
     }
 
 
-    public function removeUser(): View
+    public function removeUser()
     {
         $user_id = ($_POST['user_id']);
         $_SESSION['tab'] = self::USER_ACTION;
         if ($user_id && is_numeric($user_id) ) {
-            $this->userModel->removeUser(intval($user_id));
+           $execResult = $this->userModel->removeUser(intval($user_id));
+           if($this->checkExec($execResult)) {
+               messageDisplay('User Removed');
+           } else {
+               messageDisplay(message:'Failed. '. $this->getExecInfo($execResult), name:'err_msg');
+           }
 
             header('location: '.URLROOT.'admin');
-            return $this->admin();
         } else {
             return $this->errorPage();
         }
@@ -79,24 +85,21 @@ class UserController extends BaseController
 
     public function admin() : View
     {
-        if ($this->checkLogInStatus()) {
-//            return View::make('admin/index', ['users' =>$userList]);
-            return View::make('admin/index', $this->fetchAdminDisplayedData());
-        }
-//        echo "checkLogInStatus false <br>";
-
-        return View::make('admin/login');
-//        return View::make('admin/index', ['foo' => 'bar']);
-
+        return $this->adminRedirect();
     }
 
-    public function logout(): View
+    public function adminRedirect($params = null): View
     {
-        unset($_SESSION['user_id']);
-        unset($_SESSION['user_name']);
-        unset($_SESSION['tab']);
-        header('location: '.URLROOT.'admin');
-        return $this->admin();
+        if ($this->checkLogInStatus()) {
+            return View::make('admin/index', $this->fetchAdminDisplayedData());
+        } else {
+            header('location: '.URLROOT.'admin/login');
+            if (is_null( $params)) {
+                return View::make('admin/login');
+            }
+            return View::make('admin/login', $params);
+        }
+
     }
 
     public function createUserSession($data)
@@ -110,28 +113,37 @@ class UserController extends BaseController
         return isset($_SESSION['user_id']);
     }
 
+
     public function login(): View
     {
-        if ($this->checkLogInStatus()) {
-            return View::make('admin/index');
-        }
-        $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        $loginData = ['username' => trim($_POST['username']), 'password' => trim($_POST['password'])];
-//        $pwd_hash = password_hash($loginData['password'], PASSWORD_DEFAULT);
-//        $loginData['password'] = $pwd_hash;
-        $loginResult = $this->userModel->login($loginData);
-        if($loginResult){
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if ($this->checkLogInStatus()) {
+                return View::make('admin/index');
+            }
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $loginData = ['username' => trim($_POST['username']), 'password' => trim($_POST['password'])];
+            $loginResult = $this->userModel->login($loginData);
 
-//            echo $pwd_hash . '<br>';
-            $this->createUserSession($loginResult);
-            header('location: '.URLROOT.'admin');
-            return View::make('admin/index', $this->fetchAdminDisplayedData());
+            if ($this->checkExec($loginResult)) {
+                header('location: ' . URLROOT . 'admin');
+                $this->createUserSession($this->getExecInfo($loginResult));
+                return View::make('admin/index', $this->fetchAdminDisplayedData());
+            }
+            $params = ['err_msg' => $loginResult['info']];
+            return View::make('admin/login', array_merge($params, $loginData));
+        } else {
+            return View::make('admin/login');
         }
-//        return View::make('admin/login');
+    }
+
+    public function logout(): View
+    {
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_name']);
+        unset($_SESSION['tab']);
         header('location: '.URLROOT.'admin');
         return $this->admin();
     }
-
 
     public function fetchAdminDisplayedData(): array
     {
@@ -144,6 +156,9 @@ class UserController extends BaseController
         $data = ['users' => $userList, 'posts' => $postList, 'comments' => $commentList, 'source' => $_SESSION['tab']];
         return $data;
     }
+
+
+
 
 
 }

@@ -75,7 +75,7 @@ class Post extends BaseModel
 
     public function removePost($id)
     {
-        $this->db->excute("DELETE FROM `post` WHERE id = ?", [$id]);
+        return $this->db->excute("DELETE FROM `post` WHERE id = ?", [$id]);
     }
 
     public function createPost($data)
@@ -88,9 +88,9 @@ class Post extends BaseModel
     {
         $edited_at = (new \DateTime())->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s ');
         return $this->db->excute('UPDATE `post` SET 
-                  `title` = ?, `body` = ?, `edited_at` = ?
+                  `title` = ?, `body` = ?, `edited_at` = ?, `user_id` = ?
                   WHERE `id` = ?',
-            [$data['title'], $data['body'], $edited_at, $data['id']] );
+            [$data['title'], $data['body'], $edited_at, $data['user_id'], $data['id']] );
     }
 
     public function getPostById($id)
