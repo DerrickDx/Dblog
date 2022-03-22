@@ -51,3 +51,14 @@ The backend or Admin consists of following
 -   Ability to approve or remove blog comments
 
 -   Log-out feature for admin users
+
+## Installation
+
+Excute the following command in the docker folder
+```
+docker-compose up -d
+```
+
+Import SQL files "dblog.sql" into MySQL databases (access via PHPMyAdmin http://127.0.0.1:8080)
+
+Navigate to homepage: http://127.0.0.1:8000
