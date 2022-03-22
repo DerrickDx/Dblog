@@ -51,3 +51,11 @@ The backend or Admin consists of following
 -   Ability to approve or remove blog comments
 
 -   Log-out feature for admin users
+
+## Installation
+
+Excute the following command in the docker folder
+```
+docker-compose up -d
+```
+Homepage: http://127.0.0.1:8000
