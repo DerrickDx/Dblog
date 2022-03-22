@@ -30,7 +30,7 @@
 }
 
 /* Style the tab content */
-.tabcontent {
+.tab_content {
     display: none;
     padding: 6px 12px;
     border: 1px solid #ccc;

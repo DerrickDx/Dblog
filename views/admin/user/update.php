@@ -4,7 +4,7 @@
 
 <div>
     <h3>Update Admin User <?php print_r($this->params['user']->username); ?></h3>
-    <form name="addUserForm" action="/admin/updateUser" method="post" enctype="multipart/form-data">
+    <form name="editUserForm" action="/admin/updateUser" method="post" enctype="multipart/form-data">
         <div>
             <p><label> Username:</label></p>
             <p><input type="text" disabled name="displayed_username" value="<?php echo $this->params['user']->username; ?>" placeholder="Username"> </p>
@@ -15,7 +15,10 @@
             <p><label> Password:</label></p>
             <p> <input type="password" name="password" placeholder="Password"> </p>
         </div>
-
+        <div>
+            <p><label> Confirm Password:</label></p>
+            <p> <input type="password" name="confirm_password" placeholder="Password"> </p>
+        </div>
         <div>
             <p><label>Created Date:</label></p>
             <p><input disabled type="text" value="<?php echo $this->params['user']->created_at; ?>"></p>
@@ -38,14 +41,23 @@
 </div>
 <script>
     function validateForm() {
-        if (document.forms["addUserForm"]["username"].value == "") {
+        if (document.forms["editUserForm"]["username"].value === "") {
             alert("Please enter username");
             return false;
         }
-        if (document.forms["addUserForm"]["password"].value == "") {
+        if (document.forms["editUserForm"]["password"].value === "") {
             alert("Please enter password");
             return false;
         }
+        if (document.forms["editUserForm"]["confirm_password"].value === "") {
+            alert("Please confirm password");
+            return false;
+        }
+        if (document.forms["editUserForm"]["confirm_password"].value != document.forms["editUserForm"]["password"].value) {
+            alert("Please make sure your passwords match");
+            return false;
+        }
+        document.forms["editUserForm"]["confirm_password"].disabled = true;
     }
 </script>
 

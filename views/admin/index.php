@@ -16,21 +16,23 @@
 
     </div>
     <?php if(!empty($_SESSION['msg'])): ?>
-        <span style="color: darkgreen; font-size: x-large"><?php echo !empty($_SESSION['msg']) ? $_SESSION['msg'] : ''; ?></span>
+        <span id="msg" style="color: darkgreen; font-size: x-large"><?php echo $_SESSION['msg'] ; ?></span>
         <?php messageDisplay(); ?>
     <?php endif; ?>
+
     <?php if(!empty($_SESSION['err_msg'])): ?>
-        <span style="color: red; font-size: x-large"><?php echo !empty($_SESSION['err_msg']) ? $_SESSION['err_msg'] : ''; ?></span>
+        <span id="err_msg" style="color: red; font-size: x-large"><?php echo $_SESSION['err_msg']; ?></span>
         <?php messageDisplay(name: 'err_msg'); ?>
     <?php endif; ?>
+
     <div class="tab">
-        <button class="tablinks <?php echo $this->params['source'] ==  'user' ? 'active' :''?>" onclick="tab('user')">Admin Users</button>
-        <button class="tablinks <?php echo $this->params['source'] ==  'post' ? 'active' :''?>" onclick="tab('post')">Blog Posts</button>
-        <button class="tablinks <?php echo $this->params['source'] ==  'comment' ? 'active' :''?>" onclick="tab('comment')">Blog Comments</button>
+        <button class="tab_links <?php echo $this->params['source'] ==  USER_ACTION ? 'active' :''?>" onclick="tab('user')">Admin Users</button>
+        <button class="tab_links <?php echo $this->params['source'] ==  POST_ACTION ? 'active' :''?>" onclick="tab('post')">Blog Posts</button>
+        <button class="tab_links <?php echo $this->params['source'] ==  COMMENT_ACTION ? 'active' :''?>" onclick="tab('comment')">Blog Comments</button>
     </div>
 
-    <div id="user" style="display: <?php echo $this->params['source'] ==  'user' ? 'block' :'none'?>" class="tabcontent">
-        <h2>Admin Users   <a href="<?php echo URLROOT ; ?>admin/createUser"><button>Add</button></a></h2>
+    <div id="user" style="display: <?php echo $this->params['source'] ==  USER_ACTION ? 'block' :'none'?>" class="tab_content">
+        <h2>Admin Users   <a href="<?php echo URLROOT ; ?>admin/user/add"><button>Add</button></a></h2>
 
         <table>
             <tr>
@@ -48,7 +50,7 @@
                     <td><?php echo $user->created_at ?></td>
                     <td><?php echo $user->edited_at ?></td>
                     <td>
-                        <a href="<?php echo URLROOT ; ?>admin/updateUser?id=<?php echo $user->id; ?>"><button>Edit</button></a>
+                        <a href="<?php echo URLROOT ; ?>admin/user/edit?id=<?php echo $user->id; ?>"><button>Edit</button></a>
                     </td>
                     <td>
                         <?php if($user->id != $_SESSION['user_id']) : ?>
@@ -62,8 +64,8 @@
         </table>
     </div>
 
-    <div id="post" class="tabcontent" style="display: <?php echo $this->params['source'] ==  'post' ? 'block' :'none'?>">
-        <h2>Blog Posts   <a href="<?php echo URLROOT ; ?>admin/createPost"><button>Add</button></a></h2>
+    <div id="post" class="tab_content" style="display: <?php echo $this->params['source'] ==  POST_ACTION ? 'block' :'none'?>">
+        <h2>Blog Posts   <a href="<?php echo URLROOT ; ?>admin/post/add"><button>Add</button></a></h2>
         <table id="post_table">
             <tr>
                 <th>ID</th>
@@ -85,7 +87,7 @@
                     <td><?php echo $post->post_edited_at ?></td>
                     <td><?php echo is_null($post->username) ? 'Deactivated User' : $post->username ?></td>
                     <td>
-                        <a href="<?php echo URLROOT ; ?>admin/updatePost?id=<?php echo $post->post_id; ?>"><button>Edit</button></a>
+                        <a href="<?php echo URLROOT ; ?>admin/post/edit?id=<?php echo $post->post_id; ?>"><button>Edit</button></a>
                     </td>
                     <td>
                         <form action="<?php echo URLROOT; ?>admin/removePost" method="POST">
@@ -97,7 +99,7 @@
         </table>
     </div>
 
-    <div id="comment" class="tabcontent" style="display: <?php echo $this->params['source'] ==  'comment' ? 'block' :'none'?>">
+    <div id="comment" class="tab_content" style="display: <?php echo $this->params['source'] ==  COMMENT_ACTION ? 'block' :'none'?>">
         <h2>Blog Comments</h2>
         <table id="comment_table">
             <tr>
@@ -121,13 +123,13 @@
                     <td><?php echo $comment->post_id ?></td>
                     <td><?php echo $comment->is_approved ? 'Yes' : 'No' ?></td>
                     <td>
-                        <form action="<?php echo URLROOT; ?>admin/updateCommand" method="POST">
-                            <button name="is_approved" onclick="return confirmCommentChange()" value="<?php echo $comment->is_approved ? 0 : 1?>"><?php echo $comment->is_approved ? 'Reject' : 'Approve'  ?></button></a>
+                        <form action="<?php echo URLROOT; ?>admin/updateComment" method="POST">
+                            <button name="is_approved" onclick="return confirmCommentChange()" value="<?php echo $comment->is_approved ? 0 : 1?>"><?php echo $comment->is_approved ? 'Reject' : 'Approve'  ?></button>
                             <input type="hidden" name="comment_id" value="<?php echo $comment->comment_id ?>"/>
                         </form>
                     </td>
                     <td>
-                        <form action="<?php echo URLROOT; ?>admin/removeCommand" method="POST">
+                        <form action="<?php echo URLROOT; ?>admin/removeComment" method="POST">
                            <button name="comment_id" onclick="return confirmDelete()" value="<?php echo $comment->comment_id ?>">Remove</button>
                         </form>
                     </td>
@@ -138,14 +140,20 @@
 
     <script>
         function tab(tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
+            let i, tab_content, tab_links;
+            tab_content = document.getElementsByClassName("tab_content");
+            for (i = 0; i < tab_content.length; i++) {
+                tab_content[i].style.display = "none";
             }
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            tab_links = document.getElementsByClassName("tab_links");
+            if (document.getElementById("msg")) {
+                document.getElementById("msg").setAttribute('hidden', true);
+            }
+            if (document.getElementById("err_msg")) {
+                document.getElementById("err_msg").setAttribute('hidden', true);
+            }
+            for (i = 0; i < tab_links.length; i++) {
+                tab_links[i].className = tab_links[i].className.replace(" active", "");
             }
             console.log('tabName: '+tabName);
             document.getElementById(tabName).style.display = "block";
@@ -153,24 +161,20 @@
         }
 
         function confirmDelete() {
-            if (confirm("Are you sure you want to delete this item?")) {
-                return true;
-            }
-            return false
+            return confirm("Are you sure you want to delete this item?");
+
         }
 
         function confirmCommentChange() {
-            if (confirm("Are you sure you want to change the status of the comment?")) {
-                return true;
-            }
-            return false
+            return confirm("Are you sure you want to change the status of the comment?");
+
         }
 
         function loadDoc(tabName) {
-            var xhttp = new XMLHttpRequest();
+            let xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
 
-                if (this.readyState == 4 && this.status == 200) {
+                if (this.readyState === 4 && this.status === 200) {
                     console.log(this.response)
 
                     var arr = JSON.parse(this.response);

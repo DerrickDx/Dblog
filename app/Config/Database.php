@@ -37,10 +37,8 @@ class Database
             $excuteResult = $this->stmt->execute($params);
             return ['res' => $excuteResult, 'succeeded' => true];
         } catch (\Exception $e) {
-//            var_dump($e->getMessage());
             return ['info' => $e->getMessage(), 'succeeded' => false];
-//            throw new \Exception($e->getMessage(), (int) $e->getCode());
-//            return false;
+
         }
 
     }
@@ -53,6 +51,9 @@ class Database
         return $this->stmt->fetch(PDO::FETCH_OBJ);
     }
 
-
+    public function __call(string $name, array $arguments)
+    {
+        return call_user_func_array([$this->pdo, $name], $arguments);
+    }
 
 }

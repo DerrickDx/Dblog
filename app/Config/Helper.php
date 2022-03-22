@@ -1,7 +1,7 @@
 <?php
 
 function redirect($page){
-    header('location: '.URLROOT.'/'.$page);
+    header('location: '.URLROOT.$page);
 }
 
 function messageDisplay($message = '', $name = 'msg') {

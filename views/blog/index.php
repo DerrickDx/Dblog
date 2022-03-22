@@ -9,7 +9,7 @@
         <div>
             Created <?php echo is_null($post->username) ? '' : 'by '. $post->username; ?>  at <?php echo $post->post_created_at; ?>
         </div>
-        <p><textarea readonly style="resize:none; width: 600px; height: 50px" ><?php $charLimit = 75; echo strlen($post->body) > $charLimit ? substr($post->body, 0, $charLimit) .'...' : $post->body; ?></textarea></p>
+        <p><textarea readonly style="resize:none; width: 700px; height: 50px" ><?php $charLimit = 75; echo strlen($post->body) > $charLimit ? substr($post->body, 0, $charLimit) .'...' : $post->body; ?></textarea></p>
 
         <a href="<?php echo URLROOT; ?>blog/post?id=<?php echo $post->post_id; ?>">See Full Post</a>
         <div>

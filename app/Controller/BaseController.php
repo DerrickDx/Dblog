@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Config\Route;
 use App\Model\Comment;
 use App\Model\Post;
 use App\Model\User;
@@ -11,21 +12,25 @@ use App\View\View;
 class BaseController
 {
 
-    protected User $userModel;
-    protected Post $postModel;
-    protected Comment $commentModel;
+//    protected User $userModel;
+//    protected Post $postModel;
+//    protected Comment $commentModel;
+//    public function __construct()
+//    {
+//        $this->userModel = new User();
+//        $this->postModel = new Post();
+//        $this->commentModel = new Comment();
+//    }
 
-    const USER_ACTION = 'user';
-    const POST_ACTION = 'post';
-    const COMMENT_ACTION = 'comment';
-
-    public function __construct()
+    public function __construct(
+        protected User $userModel,
+        protected Post $postModel,
+        protected Comment $commentModel)
     {
-        $this->userModel = new User();
-        $this->postModel = new Post();
-        $this->commentModel = new Comment();
+
     }
 
+    #[Route('/', GET)]
     public function index() : View
     {
         return View::make('index');
@@ -34,7 +39,12 @@ class BaseController
 
     public function errorPage(): View {
 
-        return View::make('404');
+        return View::make('not-found');
+    }
+
+    public function sessionExpiredPage(): View {
+
+        return View::make('expired');
     }
 
     public function checkExec($res)
@@ -46,4 +56,16 @@ class BaseController
     {
         return $res['info'];
     }
+
+    public function checkLogInStatus(): bool
+    {
+        return isset($_SESSION['user_id']);
+    }
+
+    public function setTab($tab)
+    {
+        $_SESSION['tab'] = $tab;
+    }
+
+
 }

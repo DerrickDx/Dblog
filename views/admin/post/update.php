@@ -40,15 +40,15 @@
 </div>
 <script>
     function validateForm() {
-        if (document.forms["updateUserForm"]["title"].value == "") {
+        if (document.forms["updateUserForm"]["title"].value === "") {
             alert("Please enter title");
             return false;
         }
-        if (document.forms["updateUserForm"]["body"].value == "") {
+        if (document.forms["updateUserForm"]["body"].value === "") {
             alert("Please enter body");
             return false;
         }
-        if (document.forms["updateUserForm"]["user_id"].value == "0") {
+        if (document.forms["updateUserForm"]["user_id"].value === "0") {
             alert("Please select from list");
             return false;
         }

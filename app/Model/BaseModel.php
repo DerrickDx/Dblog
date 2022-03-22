@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\App;
 use App\Config\Database;
 
 abstract class BaseModel
@@ -10,7 +11,7 @@ abstract class BaseModel
 
     public function __construct()
     {
-        $this->db = new Database;
+         $this->db = App::db();
     }
 
     public function dateTimeDisplay($attr)

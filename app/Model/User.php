@@ -38,6 +38,7 @@ class User extends BaseModel
 
         if($execRes['succeeded']) {
             $result = $this->db->fetch();
+
             if($result) {
                 if (password_verify($loginData['password'], $result->password)) {
                     $execRes['info'] = $result;
@@ -45,8 +46,12 @@ class User extends BaseModel
                     $execRes['succeeded'] = false;
                     $execRes['info'] = 'Incorrect username or password';
                 }
-                return $execRes;
+
+            } else {
+                $execRes['succeeded'] = false;
+                $execRes['info'] = 'User does not exist';
             }
+            return $execRes;
         }
 
         return $execRes;

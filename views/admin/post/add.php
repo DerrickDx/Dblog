@@ -29,15 +29,15 @@
 </div>
 <script>
     function validateForm() {
-        if (document.forms["addPostrForm"]["title"].value == "") {
+        if (document.forms["addPostrForm"]["title"].value === "") {
             alert("Please enter title");
             return false;
         }
-        if (document.forms["addPostrForm"]["body"].value == "") {
+        if (document.forms["addPostrForm"]["body"].value === "") {
             alert("Please enter body");
             return false;
         }
-        if (document.forms["addPostrForm"]["user_id"].value == "0") {
+        if (document.forms["addPostrForm"]["user_id"].value === "0") {
             alert("Please select from list");
             return false;
         }

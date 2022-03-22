@@ -2,7 +2,12 @@
 <div>
     <div>
         <h1>Log in to Admin</h1>
-        <form name="loginForm" action="<?php echo URLROOT; ?>admin/login" method="post" enctype="multipart/form-data">
+
+        <form name="loginForm" action="<?php echo URLROOT; ?>admin/userLogin" method="post" enctype="multipart/form-data">
+            <?php if(!empty($_SESSION['msg'])): ?>
+                <span id="msg_a" style="color: darkgreen; font-size: x-large"><?php echo  $_SESSION['msg']; ?></span>
+
+            <?php endif; ?>
             <div >
                 <label>Username:<sup>*</sup></label>
                 <input placeholder="Username" type="text" name="username" value="<?php echo !empty($this->params['username']) ? $this->params['username'] : ''; ?>" >
@@ -27,11 +32,11 @@
 </div>
     <script>
         function validateForm() {
-            if (document.forms["loginForm"]["username"].value == "") {
+            if (document.forms["loginForm"]["username"].value === "") {
                 alert("Please enter username");
                 return false;
             }
-            if (document.forms["loginForm"]["password"].value == "") {
+            if (document.forms["loginForm"]["password"].value === "") {
                 alert("Please enter password");
                 return false;
             }

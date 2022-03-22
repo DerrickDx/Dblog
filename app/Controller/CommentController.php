@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Config\Route;
 use App\View\View;
 class CommentController extends BaseController
 {
 
+    #[Route('/admin/updateComment', POST)]
     public function updateComment()
     {
         $comment_id = ($_POST['comment_id']);
@@ -14,33 +16,35 @@ class CommentController extends BaseController
             $execResult = $this->commentModel->updateComment($data);
 //            var_dump( $aa);
             if($this->checkExec($execResult)) {
-                messageDisplay(message:'Comment updated');
+                messageDisplay('Comment Updated');
             } else {
-                messageDisplay(message:'Failed. '. $this->getExecInfo($execResult), name:'err_msg');
+                messageDisplay('Failed. '. $this->getExecInfo($execResult), 'err_msg');
             }
-            $_SESSION['tab'] = self::COMMENT_ACTION;
+            $_SESSION['tab'] = COMMENT_ACTION;
             header('location: '.URLROOT.'admin');
         } else {
             return $this->errorPage();
         }
     }
 
+    #[Route('/admin/removeComment', POST)]
     public function removeComment()
     {
         if ($_POST['comment_id'] && is_numeric($_POST['comment_id']) ) {
             $execResult = $this->commentModel->removeComment(intval($_POST['comment_id']));
            if($this->checkExec( $execResult)) {
-               messageDisplay('Comment removed');
+               messageDisplay('Comment Removed');
            } else {
-               messageDisplay(message: 'Failed');
+               messageDisplay('Failed');
            }
-            $_SESSION['tab'] = self::COMMENT_ACTION;
+            $_SESSION['tab'] = COMMENT_ACTION;
             header('location: '.URLROOT.'admin');
         } else {
             return $this->errorPage();
         }
     }
 
+    #[Route('/blog/addComment', POST)]
     public function addBlogComment()
     {
         if ($_POST['post_id']) {
@@ -52,15 +56,10 @@ class CommentController extends BaseController
         if ($this->checkExec( $execResult)) {
             messageDisplay('Comment added and will be reviewed.');
         } else {
-            messageDisplay(message:'Failed. '. $this->getExecInfo($execResult), name:'err_msg');
+            messageDisplay('Failed. '. $this->getExecInfo($execResult), 'err_msg');
         }
 
-        $results = $this->postModel->getBlogPostById($postId);
-//        var_dump($_SERVER);
         header('location: '.URLROOT.'blog/post?id=' . $postId);
-//
-
-//        return View::make('blog/details', array_merge($results, ['msg' => 'Comment added! Waiting for Admin Users to review.' , 'wowwwwwwwwwwwwwwwwwwwwww' => 'gasggggggggggggggggggg']));
     }
 
 }

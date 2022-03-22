@@ -9,7 +9,6 @@ class Comment extends BaseModel
 
     public function addBlogComment($params)
     {
-        // TO-DO: Sanitize data
         return $this->db->excute("INSERT INTO `comment` ( `name`, `post_id`, `message`, `is_anonymous`)
                 VALUES (?, ?, ?, ?)",
             [

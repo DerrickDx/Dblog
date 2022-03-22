@@ -14,6 +14,10 @@
             <p> <input type="password" name="password" placeholder="Password"> </p>
         </div>
         <div>
+            <p><label> Confirm Password:</label></p>
+            <p> <input type="password" name="confirm_password" placeholder="Password"> </p>
+        </div>
+        <div>
             <div>
                 <button onclick="return validateForm()" type="submit">Submit</button>
             </div>
@@ -28,14 +32,23 @@
 </div>
 <script>
     function validateForm() {
-        if (document.forms["addUserForm"]["username"].value == "") {
+        if (document.forms["addUserForm"]["username"].value === "") {
             alert("Please enter username");
             return false;
         }
-        if (document.forms["addUserForm"]["password"].value == "") {
+        if (document.forms["addUserForm"]["password"].value === "") {
             alert("Please enter password");
             return false;
         }
+        if (document.forms["addUserForm"]["confirm_password"].value === "") {
+            alert("Please confirm password");
+            return false;
+        }
+        if (document.forms["addUserForm"]["confirm_password"].value != document.forms["addUserForm"]["password"].value) {
+            alert("Please make sure your passwords match");
+            return false;
+        }
+        document.forms["addUserForm"]["confirm_password"].disabled = true;
     }
 </script>
 
