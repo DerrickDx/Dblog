@@ -58,4 +58,7 @@ Excute the following command in the docker folder
 ```
 docker-compose up -d
 ```
-Homepage: http://127.0.0.1:8000
+
+Import SQL files "dblog.sql" into MySQL databases (access via PHPMyAdmin http://127.0.0.1:8080)
+
+Navigate to homepage: http://127.0.0.1:8000
