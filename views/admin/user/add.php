@@ -48,6 +48,10 @@
             alert("Please make sure your passwords match");
             return false;
         }
+        if (document.forms["addUserForm"]["password"].value.length < 8) {
+            alert("Password must be at least 8 characters long");
+            return false;
+        }
         document.forms["addUserForm"]["confirm_password"].disabled = true;
     }
 </script>

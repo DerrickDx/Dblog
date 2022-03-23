@@ -2,12 +2,11 @@
 <div>
     <div>
         <h1>Log in to Admin</h1>
-
-        <form name="loginForm" action="<?php echo URLROOT; ?>admin/userLogin" method="post" enctype="multipart/form-data">
-            <?php if(!empty($_SESSION['msg'])): ?>
-                <span id="msg_a" style="color: darkgreen; font-size: x-large"><?php echo  $_SESSION['msg']; ?></span>
-
+        <form name="loginForm" action="<?php echo URLROOT; ?>admin/login" method="post" enctype="multipart/form-data">
+            <?php if(!empty($this->params['msg'])): ?>
+                <span id="msg" style="color: darkgreen; font-size: x-large"><?php echo  $this->params['msg']; ?></span>
             <?php endif; ?>
+
             <div >
                 <label>Username:<sup>*</sup></label>
                 <input placeholder="Username" type="text" name="username" value="<?php echo !empty($this->params['username']) ? $this->params['username'] : ''; ?>" >

@@ -88,7 +88,7 @@ INSERT INTO `post` (`id`, `user_id`, `title`, `body`, `created_at`, `edited_at`)
 
 CREATE TABLE `user` (
   `id` int NOT NULL,
-  `username` varchar(255) NOT NULL,
+  `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `edited_at` datetime DEFAULT NULL
@@ -99,12 +99,12 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `created_at`, `edited_at`) VALUES
-(1, 'Jaime', '$2y$10$FuIWvBP3nYduZ37iYfvnsu4/MG9uh.QR0bMr2D9NAxINW.W9bdOgi', '2022-03-15 00:01:49', '2022-03-22 06:14:26'),
-(2, 'Aegon', '$2y$10$hvjAQdz8Zv1PloCMsm0ITu8uJcYMgSrjM4o3UJiPc9R4Rt5ISmw3G', '2022-03-15 00:01:49', '2022-03-22 06:14:45'),
-(3, 'Daenerys', '$2y$10$3Wy1hMjSVLn7Fn/P525mb.MhrGL8FLrCSS1xXNeBY/mdoXSF8DIi2', '2022-03-15 00:26:28', NULL),
-(4, 'Tyrion', '$2y$10$6qJSD/NG6wYMl.f5cZwhY.qn454YJp.9cp3esb1R4unBVuPjs7nfK', '2022-03-19 15:57:23', '2022-03-22 06:58:42'),
-(5, 'Sansa', '$2y$10$z4YHOTHLIQpCl7J1yb2Yx.mAXjl5jNQYO/SjcmljjTbDxfE.pUYKG', '2022-03-19 15:57:23', '2022-03-20 23:46:19'),
-(6, 'Ayra', '$2y$10$7WlXDgZhM1Sl/aGRdh0oIO3Pa8GAZGkRrXgHqqaE3sTJg2dC8adN.', '2022-03-19 16:17:54', '2022-03-22 05:37:32');
+(1, 'Jaime', '$2y$10$gjGb6eavqJPxoL4UIhLECO97oTTSAT5gUWfPszhXm80M.uU5BdZkC', '2022-03-15 00:01:49', '2022-03-22 06:14:26'),
+(2, 'Aegon', '$2y$10$gjGb6eavqJPxoL4UIhLECO97oTTSAT5gUWfPszhXm80M.uU5BdZkC', '2022-03-15 00:01:49', '2022-03-22 06:14:45'),
+(3, 'Daenerys', '$2y$10$gjGb6eavqJPxoL4UIhLECO97oTTSAT5gUWfPszhXm80M.uU5BdZkC', '2022-03-15 00:26:28', NULL),
+(4, 'Tyrion', '$2y$10$gjGb6eavqJPxoL4UIhLECO97oTTSAT5gUWfPszhXm80M.uU5BdZkC', '2022-03-19 15:57:23', '2022-03-22 06:58:42'),
+(5, 'Sansa', '$2y$10$gjGb6eavqJPxoL4UIhLECO97oTTSAT5gUWfPszhXm80M.uU5BdZkC', '2022-03-19 15:57:23', '2022-03-20 23:46:19'),
+(6, 'Ayra', '$2y$10$gjGb6eavqJPxoL4UIhLECO97oTTSAT5gUWfPszhXm80M.uU5BdZkC', '2022-03-19 16:17:54', '2022-03-22 05:37:32');
 
 --
 -- Indexes for dumped tables

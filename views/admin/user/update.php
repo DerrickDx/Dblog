@@ -12,11 +12,11 @@
         </div>
 
         <div>
-            <p><label> Password:</label></p>
+            <p><label> New Password:</label></p>
             <p> <input type="password" name="password" placeholder="Password"> </p>
         </div>
         <div>
-            <p><label> Confirm Password:</label></p>
+            <p><label> Confirm New Password:</label></p>
             <p> <input type="password" name="confirm_password" placeholder="Password"> </p>
         </div>
         <div>
@@ -55,6 +55,10 @@
         }
         if (document.forms["editUserForm"]["confirm_password"].value != document.forms["editUserForm"]["password"].value) {
             alert("Please make sure your passwords match");
+            return false;
+        }
+        if (document.forms["editUserForm"]["password"].value.length < 8) {
+            alert("Password must be at least 8 characters long");
             return false;
         }
         document.forms["editUserForm"]["confirm_password"].disabled = true;
