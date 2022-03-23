@@ -55,8 +55,15 @@ The backend or Admin consists of following
 ## Installation
 
 Excute the following command in the docker folder
+
 ```
 docker-compose up -d
+```
+
+Install Container interface for dependency injection support
+```
+docker exec -it derrick-app bash
+composer require psr/container
 ```
 
 Import SQL files "dblog.sql" into MySQL databases (access via PHPMyAdmin http://127.0.0.1:8080)
