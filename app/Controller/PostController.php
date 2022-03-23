@@ -7,6 +7,10 @@ use App\View\View;
 
 class PostController extends BaseController
 {
+    /**
+     * Navigate to blog post listing page
+     * @return View
+     */
     #[Route('/blog', GET)]
     public function getBLogPostList() :View
     {
@@ -14,6 +18,10 @@ class PostController extends BaseController
         return View::make('blog/index', $results);
     }
 
+    /**
+     * Navigate to an individual blog post viewing page
+     * @return View
+     */
     #[Route('/blog/post', GET)]
     public function getBlogPost() :View
     {
@@ -30,45 +38,51 @@ class PostController extends BaseController
         return View::make('blog/details', $results);
     }
 
+    /**
+     * Remove a post
+     */
     #[Route('/admin/removePost', POST)]
     public function removePost()
     {
         $post_id = ($_POST['post_id']);
 
-
         if ($post_id && is_numeric($post_id) ) {
-            $this->setTab(POST_ACTION);
-
+            setTab(POST_ACTION);
             $execResult = $this->postModel->removePost($post_id);
-            if($this->checkExec($execResult)) {
+            if(checkExec($execResult)) {
                 messageDisplay('Post Removed');
+                // Remove the responding comments
+                $this->commentModel->removeCommentByPostId($post_id);
             } else {
-                messageDisplay('Failed. '. $this->getExecInfo($execResult), 'err_msg');
+                messageDisplay('Failed. '. getExecInfo($execResult), 'err_msg');
             }
-            $this->commentModel->removeCommentByPostId($post_id);
-            header('location: '.URLROOT.'admin');
+
+            redirect('location: '.URLROOT.'admin');
         } else {
             return $this->errorPage();
         }
     }
 
+    /**
+     * Create a blog post
+     */
     #[Route('/admin/createPost', POST)]
     public function createPost()
     {
-        if ($this->checkLogInStatus()) {
+        if (checkLogInStatus()) {
 
             if($_SERVER['REQUEST_METHOD'] == HTTP_METHOD_POST) {
-                $this->setTab(POST_ACTION);
+                setTab(POST_ACTION);
                 $data = ['body' => trim($_POST['body']),
                     'title' => trim($_POST['title']),
                     'user_id' => trim($_POST['user_id'])];
 
                 $execResult = $this->postModel->createPost($data);
-                if($this->checkExec($execResult)) {
+                if(checkExec($execResult)) {
                     messageDisplay('Post Created');
-                    header('location: '.URLROOT.'admin');
+                    redirect('location: '.URLROOT.'admin');
                 } else {
-                    messageDisplay('Failed. '. $this->getExecInfo($execResult), 'err_msg');
+                    messageDisplay('Failed. '. getExecInfo($execResult), 'err_msg');
                     return View::make('admin/post/add');
                 }
             } else {
@@ -80,13 +94,15 @@ class PostController extends BaseController
         }
     }
 
+    /**
+     * Navigate to the page for adding a post
+     */
     #[Route('/admin/post/add', GET)]
     public function addPost(): View
     {
-        if ($this->checkLogInStatus()) {
-
+        if (checkLogInStatus()) {
             if($_SERVER['REQUEST_METHOD'] == HTTP_METHOD_GET) {
-                $this->setTab(POST_ACTION);
+                setTab(POST_ACTION);
 
                 $userList = $this->userModel->getUserList();
                 return View::make('admin/post/add', ['users' => $userList]);
@@ -98,13 +114,16 @@ class PostController extends BaseController
         }
     }
 
+    /**
+     * Update a blog post
+     */
     #[Route('/admin/updatePost', POST)]
     public function updatePost()
     {
-        if ($this->checkLogInStatus()) {
+        if (checkLogInStatus()) {
 
             if ($_SERVER['REQUEST_METHOD'] == HTTP_METHOD_POST) {
-                $this->setTab(POST_ACTION);
+                setTab(POST_ACTION);
                 $data = [
                     'body' => trim($_POST['body']),
                     'title' => trim($_POST['title']),
@@ -113,13 +132,13 @@ class PostController extends BaseController
                 ];
 
                 $execResult = $this->postModel->updatePost($data);
-                if ($this->checkExec($execResult)) {
+                if (checkExec($execResult)) {
                     messageDisplay('Post Updated');
-                    header('location: ' . URLROOT . 'admin');
+                    redirect('location: ' . URLROOT . 'admin');
 
                 } else {
-                    messageDisplay('Failed. ' . $this->getExecInfo($execResult), 'err_msg');
-                    $params = ['err_msg' => $this->getExecInfo($execResult)];
+                    messageDisplay('Failed. ' . getExecInfo($execResult), 'err_msg');
+                    $params = ['err_msg' => getExecInfo($execResult)];
                     return View::make('admin/post/update', $params);
                 }
             } else {
@@ -132,10 +151,14 @@ class PostController extends BaseController
         }
     }
 
+    /**
+     * Navigate to the page for editing a post
+     * @return View
+     */
     #[Route('/admin/post/edit', GET)]
     public function editPost(): View
     {
-        if ($this->checkLogInStatus()) {
+        if (checkLogInStatus()) {
 
             if ($_SERVER['REQUEST_METHOD'] == HTTP_METHOD_GET) {
                 $_SESSION['tab'] = POST_ACTION;

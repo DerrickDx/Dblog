@@ -2,14 +2,12 @@
 
 namespace App\Model;
 
-use Helper;
-
 class Comment extends BaseModel
 {
 
-    public function addBlogComment($params)
+    public function addBlogComment($params): array
     {
-        return $this->db->excute("INSERT INTO `comment` ( `name`, `post_id`, `message`, `is_anonymous`)
+        return $this->db->execute("INSERT INTO `comment` ( `name`, `post_id`, `message`, `is_anonymous`)
                 VALUES (?, ?, ?, ?)",
             [
                 $params['name'],
@@ -21,31 +19,36 @@ class Comment extends BaseModel
 
     }
 
-    public function getCommentList()
+    public function getCommentList(): array
     {
-        $this->db->excute("SELECT c.id as comment_id, c.post_id, c.name, c.message, c.created_at, c.is_anonymous, c.is_approved FROM comment c");
-        $results = $this->db->fetchList();
-        foreach ( $results as $res) {
-            $res->created_at = $this->dateTimeDisplay($res->created_at);
+        $execRes = $this->db->execute("SELECT c.id as comment_id, c.post_id, c.name, c.message, c.created_at, c.is_anonymous, c.is_approved FROM comment c");
+        if(checkExec($execRes)) {
+            $results = $this->db->fetchList();
+            foreach ($results as $res) {
+                $res->created_at = $this->dateTimeDisplay($res->created_at);
+            }
+            $execRes['info'] = $results;
         }
-        return $results;
+
+        return $execRes;
     }
 
 
-    public function removeComment($id){
+    public function removeComment($id): array
+    {
 
-        return $this->db->excute("DELETE FROM comment WHERE id = ?", [$id]);
+        return $this->db->execute("DELETE FROM comment WHERE id = ?", [$id]);
     }
 
     public function removeCommentByPostId($id){
 
-        $this->db->excute("DELETE FROM comment WHERE post_id = ?", [$id]);
+        $this->db->execute("DELETE FROM comment WHERE post_id = ?", [$id]);
     }
 
-    public function updateComment($data)
+    public function updateComment($data): array
     {
 
-        return $this->db->excute('UPDATE `comment` SET 
+        return $this->db->execute('UPDATE `comment` SET 
                   `is_approved` = ?
                   WHERE `id` = ?',
             [$data['is_approved'], $data['id']] );

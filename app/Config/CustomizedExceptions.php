@@ -1,7 +1,8 @@
 <?php
 namespace App\Config;
 
-use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
+
+use Throwable;
 
 class CustomizedExceptions extends \Exception
 {

@@ -15,7 +15,6 @@ class Router
 
     public function __construct(private Container $container)
     {
-//        $this->registerRoutes();
         $this->registerRoutesFromAttributes(
             [
                 BaseController::class,
@@ -26,6 +25,10 @@ class Router
         );
     }
 
+    /**
+     * Register Routes From c ontroller attributes
+     * @throws \ReflectionException
+     */
     public function registerRoutesFromAttributes(array $controllers)
     {
         foreach ($controllers as $controller) {
@@ -43,30 +46,47 @@ class Router
 
     }
 
+    /**
+     * Register a route
+     * @param string $requestMethod
+     * @param string $route
+     * @param array $action
+     * @return $this
+     */
     public function register(string $requestMethod, string $route, array $action): self
     {
         $this->routes[$requestMethod][$route] = $action;
-
         return $this;
     }
 
 
-
-    public function get(string $route, callable|array $action): self
+    /**
+     * Register a GET action
+     * @param string $route
+     * @param array $action
+     * @return $this
+     */
+    public function get(string $route, array $action): self
     {
-        return $this->register('GET', $route, $action);
+        return $this->register(HTTP_METHOD_GET, $route, $action);
     }
 
-    public function post(string $route, callable|array $action): self
+    /**
+     * Register a POST action
+     * @param string $route
+     * @param array $action
+     * @return $this
+     */
+    public function post(string $route, array $action): self
     {
-        return $this->register('POST', $route, $action);
+        return $this->register(HTTP_METHOD_POST, $route, $action);
     }
 
-    public function routes(): array
-    {
-        return $this->routes;
-    }
-
+    /**
+     * Resolve a request
+     * @param string $requestUri
+     * @param string $requestMethod
+     */
     public function resolve(string $requestUri, string $requestMethod)
     {
         $route = explode('?', $requestUri)[0];
@@ -75,15 +95,12 @@ class Router
 
 
         if (! $action) {
-
-            return call_user_func_array([new BaseController(), 'errorPage'], []);
+            throw new CustomizedExceptions(EXC_MSG_ROUTE_NOT_FOUND);
         }
 
         if (is_array($action)) {
             [$class, $method] = $action;
-
             if (class_exists($class)) {
-
 //                $class = new $class();
                 $class = $this->container->get($class);
 
@@ -105,7 +122,7 @@ class Router
         $this->post('/blog/addComment', [CommentController::class, 'addBlogComment']);
         $this->get('/admin', [UserController::class, 'admin']);
         $this->get('/admin/login', [UserController::class, 'login']);
-        $this->post('/admin/userLogin', [UserController::class, 'userLogin']);
+        $this->post('/admin/login', [UserController::class, 'login']);
         $this->get('/admin/logout', [UserController::class, 'logout']);
         $this->get('/admin/createUser', [UserController::class, 'createUser']);
         $this->post('/admin/user/add', [UserController::class, 'addeUser']);

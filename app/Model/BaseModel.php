@@ -5,7 +5,7 @@ namespace App\Model;
 use App\App;
 use App\Config\Database;
 
-abstract class BaseModel
+class BaseModel
 {
     public Database $db;
 
@@ -14,8 +14,11 @@ abstract class BaseModel
          $this->db = App::db();
     }
 
-    public function dateTimeDisplay($attr)
+    // Convert UTC to Adelaide time for display purposes
+    public function dateTimeDisplay($attr): ?string
     {
         return is_null($attr) ?  $attr : date(DATE_TIME_FORMAT, strtotime($attr . ' UTC'));
     }
+
+
 }

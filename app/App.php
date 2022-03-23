@@ -15,12 +15,11 @@ class App
 {
     private static Database $db;
     private static Container $container;
+
     public function __construct(protected Router $router, protected array $request)
     {
         static::$db = new Database();
         static::$container = new Container();
-//        $this->container->set(User::class, Post::class, Comment::class);
-        static::$container->set(User::class, Post::class, Comment::class);
     }
 
     public static function db(): Database
@@ -34,10 +33,9 @@ class App
             echo $this->router->resolve($this->request['uri'], strtolower($this->request['method']));
         } catch (Exception $e) {
 
-            print_r($e->getMessage());
             http_response_code(404);
 
-            echo View::make('error/404');
+            echo View::make('not-found');
         }
     }
 

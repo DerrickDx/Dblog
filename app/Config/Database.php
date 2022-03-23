@@ -27,15 +27,14 @@ class Database
         }
     }
 
-    public function excute($query, $params=[]) {
+    public function execute($query, $params=[]): array
+    {
         try {
 
-            if (isset($this->pdo)) {
-            }
             $this->stmt = $this->pdo->prepare($query);
 
-            $excuteResult = $this->stmt->execute($params);
-            return ['res' => $excuteResult, 'succeeded' => true];
+            $executeResult = $this->stmt->execute($params);
+            return ['info' => $executeResult, 'succeeded' => true];
         } catch (\Exception $e) {
             return ['info' => $e->getMessage(), 'succeeded' => false];
 
@@ -51,9 +50,9 @@ class Database
         return $this->stmt->fetch(PDO::FETCH_OBJ);
     }
 
-    public function __call(string $name, array $arguments)
-    {
-        return call_user_func_array([$this->pdo, $name], $arguments);
-    }
+//    public function __call(string $name, array $arguments)
+//    {
+//        return call_user_func_array([$this->pdo, $name], $arguments);
+//    }
 
 }

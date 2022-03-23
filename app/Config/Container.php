@@ -1,7 +1,6 @@
 <?php
 namespace App\Config;
 
-use App\Config\CustomizedExceptions;
 use Psr\Container\ContainerInterface;
 
 
@@ -30,26 +29,33 @@ class Container implements ContainerInterface
         $this->entries[$id] = $concrete;
     }
 
+    /**
+     * Resolve constructors or classes
+     * @param string $id
+     */
     public function resolve(string $id)
     {
         $reflectionClass = new \ReflectionClass($id);
 
+        // Inspect the class
         if (! $reflectionClass->isInstantiable()) {
             throw new CustomizedExceptions('Class "' . $id . '" is not instantiable');
         }
 
+        // Inspect the constructor of the class
         $constructor = $reflectionClass->getConstructor();
 
         if (! $constructor) {
             return new $id;
         }
-
+        // Inspect the constructor dependencies
         $parameters = $constructor->getParameters();
 
         if (! $parameters) {
             return new $id;
         }
 
+        // Resolve classes using the container
         $dependencies = array_map(
             function (\ReflectionParameter $param) use ($id) {
                 $name = $param->getName();
