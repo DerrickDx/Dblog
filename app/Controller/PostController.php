@@ -103,9 +103,11 @@ class PostController extends BaseController
         if (checkLogInStatus()) {
             if($_SERVER['REQUEST_METHOD'] == HTTP_METHOD_GET) {
                 setTab(POST_ACTION);
-
-                $userList = $this->userModel->getUserList();
-                return View::make('admin/post/add', ['users' => $userList]);
+                $userListRes = $this->userModel->getUserList();
+                if (checkExec($userListRes)) {
+                    return View::make('admin/post/add', ['users' => getExecInfo($userListRes)]);
+                }
+                return View::make('admin/post/add');
             } else {
                 return $this->errorPage();
             }
@@ -165,8 +167,12 @@ class PostController extends BaseController
                 $post_id = ($_GET['id']);
                 if ($post_id && is_numeric($post_id)) {
                     $result = $this->postModel->getPostById($post_id);
-                    $userList = $this->userModel->getUserList();
-                    return View::make('admin/post/update', ["post" => $result, 'users' => $userList]);
+                    $userListRes = $this->userModel->getUserList();
+                    $userListRes = $this->userModel->getUserList();
+                    if (checkExec($userListRes)) {
+                        return View::make('admin/post/update', ["post" => $result, 'users' => getExecInfo($userListRes)]);
+                    }
+                    return View::make('admin/post/update');
                 } else {
                     return $this->errorPage();
                 }
